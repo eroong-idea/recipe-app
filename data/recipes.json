@@ -2,16 +2,45 @@
   "site": {
     "title": "레시피 노트",
     "subtitle": "나만의 메뉴 레시피 카탈로그",
-    "updated": "2026년 8월"
+    "updated": "2026년 8월",
+    "adminHash": "3dd9c0995d54c0abd51a90f1d57b1ce77bc885fc8a7cea52dcad3c2540dda5ee"
   },
   "categories": [
-    { "id": "main", "emoji": "🍚", "name": "메인요리" },
-    { "id": "noodle", "emoji": "🍜", "name": "밥·면" },
-    { "id": "soup", "emoji": "🍲", "name": "국·탕·찌개" },
-    { "id": "side", "emoji": "🥗", "name": "반찬·샐러드" },
-    { "id": "snack", "emoji": "🌮", "name": "분식·스낵" },
-    { "id": "dessert", "emoji": "🍰", "name": "디저트" },
-    { "id": "sauce", "emoji": "🫙", "name": "소스·베이스" }
+    {
+      "id": "main",
+      "emoji": "🍚",
+      "name": "메인요리"
+    },
+    {
+      "id": "noodle",
+      "emoji": "🍜",
+      "name": "밥·면"
+    },
+    {
+      "id": "soup",
+      "emoji": "🍲",
+      "name": "국·탕·찌개"
+    },
+    {
+      "id": "side",
+      "emoji": "🥗",
+      "name": "반찬·샐러드"
+    },
+    {
+      "id": "snack",
+      "emoji": "🌮",
+      "name": "분식·스낵"
+    },
+    {
+      "id": "dessert",
+      "emoji": "🍰",
+      "name": "디저트"
+    },
+    {
+      "id": "sauce",
+      "emoji": "🫙",
+      "name": "소스·베이스"
+    }
   ],
   "recipes": []
 }

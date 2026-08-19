@@ -26,7 +26,7 @@ async function init() {
 
 /* ---------- 비밀번호 잠금 ---------- */
 const UNLOCK_KEY = "recipeNote.unlocked";
-const LOCK_ENABLED = false; // 잠금 기능 비활성화 (요청 시 true 로 되돌릴 수 있음)
+const LOCK_ENABLED = true; // 잠금은 파일(recipes.json)에 비밀번호가 있을 때만 표시됨
 function setupAuth() {
   updatePwState();
   const hash = DATA.site.adminHash;
