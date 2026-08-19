@@ -1,45 +1,30 @@
 {
   "site": {
     "title": "레시피 노트",
-    "subtitle": "나만의 메뉴 레시피 카탈로그",
-    "updated": "2026년 8월",
+    "subtitle": "한신우동 레시피 카탈로그",
+    "updated": "2026년 8월 19일",
     "adminHash": "3dd9c0995d54c0abd51a90f1d57b1ce77bc885fc8a7cea52dcad3c2540dda5ee"
   },
   "categories": [
     {
-      "id": "main",
-      "emoji": "🍚",
-      "name": "메인요리"
-    },
-    {
       "id": "noodle",
       "emoji": "🍜",
-      "name": "밥·면"
+      "name": "우동 메뉴"
     },
     {
       "id": "soup",
       "emoji": "🍲",
-      "name": "국·탕·찌개"
+      "name": "돈까스 메뉴"
     },
     {
       "id": "side",
       "emoji": "🥗",
-      "name": "반찬·샐러드"
-    },
-    {
-      "id": "snack",
-      "emoji": "🌮",
-      "name": "분식·스낵"
-    },
-    {
-      "id": "dessert",
-      "emoji": "🍰",
-      "name": "디저트"
+      "name": "사이드 메뉴"
     },
     {
       "id": "sauce",
       "emoji": "🫙",
-      "name": "소스·베이스"
+      "name": "준비과정"
     }
   ],
   "recipes": []
