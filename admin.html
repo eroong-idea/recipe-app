@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>레시피 노트 · 관리자</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+</head>
+<body>
+  <!-- 비밀번호 잠금 화면 -->
+  <div class="lock-screen" id="lockScreen" hidden>
+    <div class="lock-card">
+      <div class="lock-icon">🔒</div>
+      <h1>관리자 잠금</h1>
+      <p>레시피를 편집하려면 비밀번호를 입력하세요.</p>
+      <form id="lockForm">
+        <input type="password" id="lockInput" class="input" placeholder="비밀번호" autocomplete="current-password" autofocus>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:10px">열기</button>
+      </form>
+      <p class="lock-error" id="lockError" hidden>비밀번호가 올바르지 않습니다.</p>
+      <a href="index.html" class="lock-back">← 뷰어로 돌아가기</a>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner admin-toolbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">R</span>
+        <span class="brand-text">
+          <span class="brand-title">관리자 화면</span>
+          <span class="brand-sub">레시피 추가 · 수정 · 내보내기</span>
+        </span>
+      </a>
+      <span class="grow"></span>
+      <button class="btn btn-sm" id="btnSettings">🏷️ 사이트·카테고리</button>
+      <button class="btn btn-sm" id="btnImport">📥 가져오기</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+      <button class="btn btn-sm btn-danger" id="btnReset">↺ 초기화</button>
+      <button class="btn btn-sm btn-primary" id="btnExport">💾 내보내기(배포)</button>
+      <a class="btn btn-sm btn-ghost" href="index.html" target="_blank">👁 미리보기</a>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <!-- 좌측: 레시피 목록 -->
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="row">
+          <h2>레시피 <span class="cnt">(<span id="listCount">0</span>)</span></h2>
+          <span class="grow" style="flex:1"></span>
+          <button class="btn btn-sm btn-primary" id="btnNew">+ 새 레시피</button>
+        </div>
+        <input class="list-search" id="listSearch" type="text" placeholder="목록에서 검색…">
+      </div>
+      <div class="recipe-list" id="recipeList"></div>
+    </aside>
+
+    <!-- 우측: 편집기 -->
+    <main class="editor">
+      <div class="editor-head">
+        <h1 id="editorTitle">새 레시피</h1>
+        <button class="btn btn-sm btn-danger" id="btnDelete" style="display:none">🗑 삭제</button>
+        <button class="btn btn-sm btn-primary" id="btnSave">저장 (Ctrl+S)</button>
+      </div>
+
+      <div class="field">
+        <label>메뉴 이름 <span class="req">*</span></label>
+        <input class="input" id="fTitle" type="text" placeholder="예: 스팸후랑크 김밥">
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>카테고리</label>
+          <select class="input" id="fCategory"></select>
+        </div>
+        <div class="field">
+          <label>태그 <span class="hint">쉼표로 구분</span></label>
+          <input class="input" id="fTags" type="text" placeholder="예: 외식, 델리">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>한 줄 설명</label>
+        <textarea class="textarea" id="fDesc" rows="2" placeholder="메뉴를 소개하는 짧은 설명"></textarea>
+      </div>
+
+      <div class="grid3">
+        <div class="field"><label>조리시간</label><input class="input" id="fTime" placeholder="예: 12분"></div>
+        <div class="field"><label>조리방법</label><input class="input" id="fMethod" placeholder="예: 팬 조리 / 오븐 조리"></div>
+        <div class="field"><label>분량</label><input class="input" id="fServings" placeholder="예: 1인분"></div>
+      </div>
+
+      <div class="field">
+        <label>대표 사진</label>
+        <div class="img-preview" id="imgPreview"></div>
+        <input type="file" id="fImage" accept="image/*" hidden>
+      </div>
+
+      <!-- 재료 -->
+      <div class="section-card">
+        <div class="dyn-head"><h3>재료</h3><button class="btn btn-sm" id="btnAddIng">+ 재료 추가</button></div>
+        <div id="ingList"></div>
+      </div>
+
+      <!-- 조리법 -->
+      <div class="section-card">
+        <div class="dyn-head"><h3>조리법</h3><button class="btn btn-sm" id="btnAddStep">+ 단계 추가</button></div>
+        <div id="stepList"></div>
+      </div>
+
+      <!-- 사용 제품 -->
+      <div class="section-card">
+        <div class="dyn-head"><h3>사용 제품 <span class="hint" style="font-weight:400;color:var(--ink-faint)">선택</span></h3><button class="btn btn-sm" id="btnAddProd">+ 제품 추가</button></div>
+        <div id="prodList"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 설정 패널 -->
+  <aside class="settings-panel" id="settingsPanel">
+    <div class="settings-head">
+      <h2>사이트 · 카테고리 설정</h2>
+      <button class="btn btn-ghost btn-sm" id="settingsClose">✕</button>
+    </div>
+    <div class="settings-body">
+      <div class="field"><label>사이트 제목</label><input class="input" id="siteTitle" placeholder="레시피 노트"></div>
+      <div class="field"><label>부제목</label><input class="input" id="siteSubtitle" placeholder="나만의 메뉴 레시피 카탈로그"></div>
+      <div class="field"><label>최종 업데이트 표기</label><input class="input" id="siteUpdated" placeholder="예: 2026년 8월"></div>
+
+      <div class="divider"></div>
+      <h3 style="font-size:15px;font-weight:800;margin-bottom:6px">🔒 관리자 비밀번호</h3>
+      <p class="muted" style="margin-bottom:10px" id="pwState"></p>
+      <div class="field">
+        <input class="input" id="pwInput" type="password" placeholder="새 비밀번호 (비우면 잠금 해제)">
+      </div>
+      <button class="btn btn-sm btn-primary" id="btnSetPw">비밀번호 적용</button>
+      <p class="muted" style="margin-top:10px;line-height:1.5">적용 후 반드시 <b>내보내기 → data/recipes.json 교체 → 배포</b>해야 실제 사이트에 잠금이 반영됩니다.</p>
+
+      <div class="divider"></div>
+      <div class="dyn-head"><h3 style="font-size:15px;font-weight:800">카테고리</h3><button class="btn btn-sm" id="btnAddCat">+ 추가</button></div>
+      <p class="muted" style="margin-bottom:12px">이모지 · 이름을 수정하면 바로 반영됩니다.</p>
+      <div id="catList"></div>
+    </div>
+  </aside>
+
+  <script src="js/store.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
