@@ -56,14 +56,21 @@ async function loadForViewer() {
   return emptyData();
 }
 
-/** 관리자용: 로컬 우선(작업 중), 없으면 파일에서 가져오기 */
+/** 관리자용: 로컬 우선(작업 중 편집 보존), 없으면 파일.
+ *  단, 비밀번호 잠금(adminHash)은 "배포된 파일"을 기준으로 삼는다.
+ *  → 파일에 비밀번호가 없으면 로컬에 남은 stale 값 때문에 갇히지 않는다. */
 async function loadForAdmin() {
   const local = loadLocal();
-  if (local) return normalize(local);
   const file = await loadFile();
+  if (local) {
+    const data = normalize(local);
+    // 잠금은 오직 "배포된 파일"에 비밀번호가 있을 때만. 파일에 없거나 파일을 못 읽으면 잠그지 않음.
+    if (file && file.site && file.site.adminHash) data.site.adminHash = file.site.adminHash;
+    else delete data.site.adminHash;
+    return data;
+  }
   if (file) { const d = normalize(file); saveLocal(d); return d; }
-  const d = emptyData();
-  return d;
+  return emptyData();
 }
 
 /** 데이터 형태 보정 */

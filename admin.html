@@ -10,6 +10,16 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/admin.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <script>
+    // 자가 치유: 브라우저에 남은 잠금 값을 페이지 로드 즉시 제거.
+    // (잠금은 배포된 data/recipes.json 파일에 비밀번호가 있을 때만 걸립니다.)
+    try {
+      var k = "recipeNote.v1";
+      var raw = localStorage.getItem(k);
+      if (raw) { var d = JSON.parse(raw); if (d && d.site && d.site.adminHash) { delete d.site.adminHash; localStorage.setItem(k, JSON.stringify(d)); } }
+      sessionStorage.removeItem("recipeNote.unlocked");
+    } catch (e) {}
+  </script>
 </head>
 <body>
   <!-- 비밀번호 잠금 화면 -->
@@ -24,6 +34,7 @@
       </form>
       <p class="lock-error" id="lockError" hidden>비밀번호가 올바르지 않습니다.</p>
       <a href="index.html" class="lock-back">← 뷰어로 돌아가기</a>
+      <button type="button" class="lock-reset" id="lockReset">비밀번호를 잊으셨나요? · 이 브라우저 잠금 초기화</button>
     </div>
   </div>
 
@@ -148,7 +159,7 @@
     </div>
   </aside>
 
-  <script src="js/store.js"></script>
-  <script src="js/admin.js"></script>
+  <script src="js/store.js?v=3"></script>
+  <script src="js/admin.js?v=3"></script>
 </body>
 </html>

@@ -26,11 +26,19 @@ async function init() {
 
 /* ---------- 비밀번호 잠금 ---------- */
 const UNLOCK_KEY = "recipeNote.unlocked";
+const LOCK_ENABLED = false; // 잠금 기능 비활성화 (요청 시 true 로 되돌릴 수 있음)
 function setupAuth() {
   updatePwState();
   const hash = DATA.site.adminHash;
   const unlocked = hash && sessionStorage.getItem(UNLOCK_KEY) === hash;
-  if (hash && !unlocked) showLock();
+  if (LOCK_ENABLED && hash && !unlocked) showLock();
+
+  $("#lockReset").addEventListener("click", () => {
+    if (!confirm("이 브라우저에 저장된 잠금/편집 정보를 초기화합니다.\n(배포된 recipes.json 파일에 비밀번호가 설정돼 있으면 그 잠금은 파일에서 다시 적용됩니다) 계속할까요?")) return;
+    localStorage.removeItem(S.STORE_KEY);
+    sessionStorage.removeItem(UNLOCK_KEY);
+    location.reload();
+  });
 
   const form = $("#lockForm");
   form.addEventListener("submit", async (e) => {
