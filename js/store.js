@@ -43,16 +43,18 @@ async function loadFile() {
 }
 
 /** 뷰어용 데이터 선택 규칙:
- *  - 배포된 data/recipes.json 에 레시피가 있으면 그것을 보여줌(방문자 = 게시된 내용).
- *  - 아직 내보내기 전(파일이 비어 있음/없음)이라면 이 브라우저의 작업본(localStorage)을
- *    보여줘서 작성자가 로컬에서 바로 미리볼 수 있게 함.
+ *  - 이 브라우저에 작업본(localStorage)이 있으면 그것을 우선 표시.
+ *    → 작성자는 관리자에서 '저장'만 하면 (내보내기·배포 전에도) 미리보기에 바로 반영됨.
+ *    (뷰어 페이지는 localStorage에 쓰지 않으므로, 편집을 한 적 없는 방문자는 작업본이 없음)
+ *  - 작업본이 없으면 배포된 data/recipes.json 을 표시 (방문자 = 게시된 내용).
  */
 async function loadForViewer() {
-  const file = await loadFile();
-  if (file && Array.isArray(file.recipes) && file.recipes.length > 0) return normalize(file);
   const local = loadLocal();
   if (local && Array.isArray(local.recipes) && local.recipes.length > 0) return normalize(local);
+  const file = await loadFile();
+  if (file && Array.isArray(file.recipes) && file.recipes.length > 0) return normalize(file);
   if (file) return normalize(file);   // 파일은 있으나 비어있음 → 카테고리/사이트설정 유지
+  if (local) return normalize(local);
   return emptyData();
 }
 

@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=4">
-  <link rel="stylesheet" href="css/admin.css?v=4">
+  <link rel="stylesheet" href="css/style.css?v=7">
+  <link rel="stylesheet" href="css/admin.css?v=7">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
   <script>
     // 자가 치유: 브라우저에 남은 잠금 값을 페이지 로드 즉시 제거.
@@ -53,7 +53,7 @@
       <input type="file" id="importFile" accept="application/json" hidden>
       <button class="btn btn-sm btn-danger" id="btnReset">↺ 초기화</button>
       <button class="btn btn-sm btn-primary" id="btnExport">💾 내보내기(배포)</button>
-      <a class="btn btn-sm btn-ghost" href="index.html" target="_blank">👁 미리보기</a>
+      <a class="btn btn-sm btn-ghost" href="index.html" title="저장된 레시피를 보기 화면으로 확인 (브라우저 뒤로가기로 복귀)">👁 미리보기</a>
     </div>
   </header>
 
@@ -106,6 +106,12 @@
         <div class="field"><label>분량</label><input class="input" id="fServings" placeholder="예: 1인분"></div>
       </div>
 
+      <div class="grid3">
+        <div class="field"><label>판매가 <span class="hint">원</span></label><input class="input" id="fPrice" type="number" inputmode="numeric" min="0" placeholder="예: 8000"></div>
+        <div class="field"><label>원가 <span class="hint">원</span></label><input class="input" id="fCost" type="number" inputmode="numeric" min="0" placeholder="예: 1800"></div>
+        <div class="field"><label>원가율 <span class="hint">자동 계산</span></label><input class="input" id="fCostRate" type="text" readonly placeholder="—" style="background:var(--surface-2);font-weight:700;color:var(--accent)"></div>
+      </div>
+
       <div class="field">
         <label>대표 사진</label>
         <div class="img-preview" id="imgPreview"></div>
@@ -128,6 +134,12 @@
       <div class="section-card">
         <div class="dyn-head"><h3>사용 제품 <span class="hint" style="font-weight:400;color:var(--ink-faint)">선택</span></h3><button class="btn btn-sm" id="btnAddProd">+ 제품 추가</button></div>
         <div id="prodList"></div>
+      </div>
+
+      <!-- 메모 -->
+      <div class="section-card">
+        <div class="dyn-head"><h3>📝 메모 <span class="hint" style="font-weight:400;color:var(--ink-faint)">선택</span></h3></div>
+        <textarea class="textarea" id="fMemo" rows="4" placeholder="조리 팁, 주의사항, 원가·염도 메모 등 자유롭게 기록하세요. 여러 줄로 입력할 수 있어요."></textarea>
       </div>
     </main>
   </div>
@@ -159,7 +171,7 @@
     </div>
   </aside>
 
-  <script src="js/store.js?v=4"></script>
-  <script src="js/admin.js?v=4"></script>
+  <script src="js/store.js?v=7"></script>
+  <script src="js/admin.js?v=7"></script>
 </body>
 </html>

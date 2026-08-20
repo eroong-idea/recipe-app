@@ -120,6 +120,18 @@ function openDetail(id) {
   if (r.cookMethod) meta.push(`<div class="meta-pill">🍳 조리방법 <b>${esc(r.cookMethod)}</b></div>`);
   if (r.servings) meta.push(`<div class="meta-pill">🍽️ 분량 <b>${esc(r.servings)}</b></div>`);
 
+  // 판매가 / 원가 / 원가율(자동)
+  const won = (n) => Number(n).toLocaleString("ko-KR") + "원";
+  const priceNum = parseFloat(r.price);
+  const costNum = parseFloat(r.cost);
+  const hasPrice = !isNaN(priceNum);
+  const hasCost = !isNaN(costNum);
+  const priceMeta = [];
+  if (hasPrice) priceMeta.push(`<div class="meta-pill price">💰 판매가 <b>${won(priceNum)}</b></div>`);
+  if (hasCost) priceMeta.push(`<div class="meta-pill price">📦 원가 <b>${won(costNum)}</b></div>`);
+  if (hasPrice && hasCost && priceNum > 0)
+    priceMeta.push(`<div class="meta-pill rate">📊 원가율 <b>${(costNum / priceNum * 100).toFixed(1)}%</b></div>`);
+
   const ing = (r.ingredients || []).filter((i) => i.name).map((i) =>
     `<li><span>${esc(i.name)}</span><span class="amt">${esc(i.amount || "")}</span></li>`).join("");
   const steps = (r.steps || []).filter(Boolean).map((s) =>
@@ -135,9 +147,11 @@ function openDetail(id) {
       <h2 class="modal-title">${esc(r.title)}</h2>
       ${r.description ? `<p class="modal-desc">${esc(r.description)}</p>` : ""}
       ${meta.length ? `<div class="modal-metarow">${meta.join("")}</div>` : ""}
+      ${priceMeta.length ? `<div class="modal-metarow">${priceMeta.join("")}</div>` : ""}
       ${ing ? `<div class="divider"></div><h3 class="block-title">재료 ${r.servings ? `<span class="n">(${esc(r.servings)})</span>` : ""}</h3><ul class="ingredients">${ing}</ul>` : ""}
       ${steps ? `<div class="divider"></div><h3 class="block-title">조리법</h3><ol class="steps">${steps}</ol>` : ""}
       ${prods ? `<div class="divider"></div><h3 class="block-title">사용 제품</h3><div class="products">${prods}</div>` : ""}
+      ${r.memo ? `<div class="divider"></div><h3 class="block-title">📝 메모</h3><div class="memo-box">${esc(r.memo)}</div>` : ""}
     </div>`;
   $("#modalContent .modal-close").addEventListener("click", closeDetail);
   $("#modalBackdrop").classList.add("open");

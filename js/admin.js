@@ -165,7 +165,7 @@ function renderList() {
 /* ---------- 편집기 ---------- */
 function blankRecipe() {
   return { id: null, title: "", categoryId: DATA.categories[0]?.id || "", tags: [], description: "",
-    cookTime: "", cookMethod: "", servings: "1인분", image: "",
+    cookTime: "", cookMethod: "", servings: "1인분", price: "", cost: "", image: "", memo: "",
     ingredients: [{ name: "", amount: "" }], steps: [""], products: [{ name: "", link: "" }] };
 }
 let draft = blankRecipe();
@@ -203,6 +203,10 @@ function fillEditor(r) {
   $("#fTime").value = r.cookTime || "";
   $("#fMethod").value = r.cookMethod || "";
   $("#fServings").value = r.servings || "";
+  $("#fPrice").value = r.price ?? "";
+  $("#fCost").value = r.cost ?? "";
+  updateCostRate();
+  $("#fMemo").value = r.memo || "";
   renderImage(r.image);
   renderIngredients();
   renderSteps();
@@ -275,6 +279,18 @@ function renderProducts() {
 
 function autoGrow(ta) { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
 
+/* 원가율 = 원가 / 판매가 × 100 (실시간 계산) */
+function updateCostRate() {
+  const price = parseFloat($("#fPrice").value);
+  const cost = parseFloat($("#fCost").value);
+  const el = $("#fCostRate");
+  if (!isNaN(price) && price > 0 && !isNaN(cost) && cost >= 0) {
+    el.value = (cost / price * 100).toFixed(1) + "%";
+  } else {
+    el.value = "";
+  }
+}
+
 /* ---------- 저장/삭제 ---------- */
 function collectDraft() {
   draft.title = $("#fTitle").value.trim();
@@ -284,6 +300,9 @@ function collectDraft() {
   draft.cookTime = $("#fTime").value.trim();
   draft.cookMethod = $("#fMethod").value.trim();
   draft.servings = $("#fServings").value.trim();
+  draft.price = $("#fPrice").value.trim();
+  draft.cost = $("#fCost").value.trim();
+  draft.memo = $("#fMemo").value.trim();
   draft.ingredients = draft.ingredients.filter((i) => i.name.trim() || i.amount.trim());
   draft.steps = draft.steps.map((s) => s.trim()).filter(Boolean);
   draft.products = draft.products.filter((p) => p.name.trim());
@@ -407,6 +426,10 @@ function bindEditor() {
   $("#btnAddProd").addEventListener("click", () => { draft.products.push({ name: "", link: "" }); renderProducts(); });
 
   $("#fImage").addEventListener("change", (e) => { if (e.target.files[0]) handleImageFile(e.target.files[0]); e.target.value = ""; });
+
+  // 판매가/원가 입력 시 원가율 실시간 계산
+  $("#fPrice").addEventListener("input", updateCostRate);
+  $("#fCost").addEventListener("input", updateCostRate);
 
   // 이미지 드래그&드롭
   const box = $("#imgPreview");
